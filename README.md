@@ -1,11 +1,8 @@
-# PaySecure Gateway: Multi-Region Disaster Recovery Architecture
+# Multi-Region Disaster Recovery Architecture Payment Systems
 
-[![Architecture Status: Production-Ready](https://img.shields.io/badge/Architecture-Multi--Region--DR-brightgreen.svg)](#)
-[![Compliance: RBI-2024 | PCI-DSS v4.0 | NPCI](https://img.shields.io/badge/Compliance-RBI%20%7C%20PCI--DSS%20v4.0%20%7C%20NPCI-blue.svg)](#)
-[![Target SLA: 99.99%](https://img.shields.io/badge/SLA-99.99%25%20(52.6m%2Fyr)-green.svg)](#)
-[![RPO: <1m | RTO: <5m](https://img.shields.io/badge/Target-RPO%20%3C1m%20%7C%20RTO%20%3C5m-orange.svg)](#)
-
-Enterprise Multi-Region Disaster Recovery Architecture and operational engineering deliverables for **PaySecure Gateway Private Limited**—an RBI-regulated payment aggregator processing **3.2 million daily transactions** worth **₹500 crore INR (~$60M USD)** across **45,000 active merchants** at a peak of **1,200 TPS**.
+> **Author** : Nihal N  
+> **Track** : DevOps & Cloud Engineer  
+> **Category** : Disaster Recovery Architecture   
 
 ---
 
@@ -138,7 +135,6 @@ doc-5b-multi-region-dr/
 
 ## 4. Architectural Recommendation Summary
 
-After rigorous 8-dimensional evaluation across **Active-Active** and **Active-Passive (Hot Standby)** designs:
 - **Recommended Primary Architecture**: **Active-Passive (Hot Standby)** between **Mumbai (`ap-south-1`)** and **Hyderabad (`ap-south-2`)**.
 - **Key Architectural Rationale**:
   1. **Financial Consistency & Split-Brain Elimination**: Financial payment aggregation requires strict ACID consistency. Multi-writer active-active across regions introduces distributed locking latencies and split-brain settlement discrepancies that risk double-crediting merchant accounts during intermittent network partitions.
@@ -151,26 +147,25 @@ After rigorous 8-dimensional evaluation across **Active-Active** and **Active-Pa
 
 ## 5. Verification & Compliance Standards
 
-All architectural documentation and infrastructure code adhere strictly to:
 - **RBI Master Direction on Payment and Settlement Systems (2024)** (Mandatory DR Site, RTO < 4 hrs, near-zero RPO).
 - **RBI Directive on Storage of Payment System Data (DPSS.CO.OD No. 2785/06.08.005/2017-18)** (100% Indian Data Localisation).
 - **PCI DSS v4.0** Requirements 1.3, 3.5.1, 4.2.1, 10.2, 12.10 (Cardholder Data Environment isolation, AES-256-GCM, TLS 1.3, annual & quarterly BCP drills).
 - **NPCI UPI Procedural Guidelines & Technical Specifications** (End-to-end P99 < 300 ms, 99.95% network availability).
 - **Information Technology Act, 2000 (Section 43A)** & **Digital Personal Data Protection Act, 2023 (DPDPA)** (Reasonable security safeguards and data residency).
 ---
+
 <div align="center">
 
-# 👨‍💻 Author
+## 👨‍💻 Author
 
-## **Nihal N**
+# Nihal N
 
-**DevOps • Cloud • Kubernetes**
+### DevOps | Cloud | Kubernetes | AWS 
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-Nihal%20N-blue?logo=linkedin)](https://www.linkedin.com/in/nihal-n-cse/)
----
 
-
-
-## If you found this Project useful, consider giving it a ⭐!
+**If you found this repository useful, consider giving it a ⭐**
 
 </div>
+
+---
