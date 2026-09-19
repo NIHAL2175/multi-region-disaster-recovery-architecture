@@ -1,0 +1,118 @@
+groups:
+- name: paysecure_dr_replication_alerts
+  rules:
+  - alert: AuroraGlobalDBReplicationLagCritical
+    expr: aws_rds_aurora_global_db_replication_lag_average{db_cluster_identifier=~'paysecure-.*'}
+      > 500
+    for: 2m
+    labels:
+      severity: P1-Critical
+      component: aurora-postgresql
+      tier: database
+      dr_role: secondary
+    annotations:
+      summary: Aurora Global DB cross-region replication lag exceeds 500ms
+      description: 'Replication lag between Mumbai (ap-south-1) and Hyderabad (ap-south-2)
+        is {{ $value }}ms (threshold: 500ms). RPO SLA at severe risk of breach.'
+      runbook_url: https://github.com/paysecure/doc-5b-multi-region-dr/blob/main/docs/05-runbooks/RB-01-complete-region-failure.md
+  - alert: DynamoDBGlobalTableReplicationLagCritical
+    expr: aws_dynamodb_replication_latency_average{table_name=~'paysecure-.*'} > 1000
+    for: 3m
+    labels:
+      severity: P1-Critical
+      component: dynamodb-global-tables
+      tier: database
+    annotations:
+      summary: DynamoDB Global Table replication lag exceeds 1000ms
+      description: Idempotency key replication latency across regions is {{ $value
+        }}ms. Risk of duplicate transaction processing in split-brain/failover.
+      runbook_url: https://github.com/paysecure/doc-5b-multi-region-dr/blob/main/docs/05-runbooks/RB-05-network-partition.md
+  - alert: ElastiCacheGlobalDatastoreLagHigh
+    expr: aws_elasticache_global_datastore_replication_lag_average > 2000
+    for: 3m
+    labels:
+      severity: P2-High
+      component: elasticache-redis
+      tier: cache
+    annotations:
+      summary: ElastiCache Global Datastore replication lag exceeds 2000ms
+      description: Session and rate-limit cache replication between Mumbai and Hyderabad
+        is lagging by {{ $value }}ms.
+      runbook_url: https://github.com/paysecure/doc-5b-multi-region-dr/blob/main/docs/05-runbooks/RB-10-single-az-power-failure.md
+  - alert: MSKReplicatorLagHigh
+    expr: aws_kafka_replicator_message_lag_sum{replicator_name='paysecure-hyd-replicator'}
+      > 10000
+    for: 5m
+    labels:
+      severity: P2-High
+      component: msk-kafka
+      tier: messaging
+    annotations:
+      summary: MSK cross-region event replication lag exceeds 10,000 messages
+      description: Message backlog in MSK Replicator queue has reached {{ $value }}
+        messages. Settlement event synchronization delayed.
+      runbook_url: https://github.com/paysecure/doc-5b-multi-region-dr/blob/main/docs/05-runbooks/RB-04-kafka-cluster-failure.md
+- name: paysecure_application_and_health_alerts
+  rules:
+  - alert: PaymentAPISuccessRateCritical
+    expr: (sum(rate(http_requests_total{job='payment-api',status=~'2..'}[2m])) / sum(rate(http_requests_total{job='payment-api'}[2m])))
+      * 100 < 99.5
+    for: 2m
+    labels:
+      severity: P1-Critical
+      component: payment-api
+      tier: frontend
+    annotations:
+      summary: Payment API 2xx success rate dropped below 99.5%
+      description: Current payment success rate is {{ $value }}%. Immediate breach
+        of RBI/NPCI uptime standards.
+      runbook_url: https://github.com/paysecure/doc-5b-multi-region-dr/blob/main/docs/05-runbooks/RB-12-cascading-microservice-failure.md
+  - alert: TransactionP99LatencyHigh
+    expr: histogram_quantile(0.99, sum(rate(payment_transaction_duration_seconds_bucket[5m]))
+      by (le)) * 1000 > 300
+    for: 5m
+    labels:
+      severity: P2-High
+      component: transaction-processor
+      tier: processing
+    annotations:
+      summary: P99 Transaction Latency exceeds 300ms NPCI UPI ceiling
+      description: 'End-to-end P99 latency is {{ $value }}ms (budget: < 300ms). Downstream
+        bank timeouts imminent.'
+      runbook_url: https://github.com/paysecure/doc-5b-multi-region-dr/blob/main/docs/05-runbooks/RB-08-third-party-npci-outage.md
+  - alert: Route53EndpointHealthFailure
+    expr: aws_route53_health_check_status < 1
+    for: 30s
+    labels:
+      severity: P1-Critical
+      component: route53-dns
+      tier: networking
+    annotations:
+      summary: Route 53 Deep Health Check probe failed
+      description: Primary region health check endpoint has failed 3 consecutive checks
+        (30s). Automated DNS failover evaluated.
+      runbook_url: https://github.com/paysecure/doc-5b-multi-region-dr/blob/main/docs/05-runbooks/RB-01-complete-region-failure.md
+  - alert: EKSWorkerNodesUnreadyHigh
+    expr: sum(kube_node_status_condition{condition='Ready',status='false'}) > 2
+    for: 3m
+    labels:
+      severity: P2-High
+      component: eks-cluster
+      tier: compute
+    annotations:
+      summary: More than 2 EKS worker nodes are unready
+      description: Cluster compute capacity degraded in region {{ $labels.region }}.
+        {{ $value }} nodes unready.
+      runbook_url: https://github.com/paysecure/doc-5b-multi-region-dr/blob/main/docs/05-runbooks/RB-10-single-az-power-failure.md
+  - alert: KMSKeyAnomalyCritical
+    expr: sum(rate(aws_kms_requests_total[5m])) > 3 * avg_over_time(sum(rate(aws_kms_requests_total[1h]))[6h:5m])
+    for: 2m
+    labels:
+      severity: P1-Critical
+      component: aws-kms
+      tier: security
+    annotations:
+      summary: KMS Decryption API call anomaly (> 3x normal hourly volume)
+      description: Potential cryptographic key compromise or mass exfiltration attempt
+        detected in CDE boundary.
+      runbook_url: https://github.com/paysecure/doc-5b-multi-region-dr/blob/main/docs/05-runbooks/RB-06-cryptographic-key-compromise.md

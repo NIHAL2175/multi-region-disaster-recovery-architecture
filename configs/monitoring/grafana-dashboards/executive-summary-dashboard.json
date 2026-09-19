@@ -1,0 +1,134 @@
+{
+  "title": "PaySecure Gateway - Executive DR & Compliance Summary",
+  "description": "High-level metrics for CTO, CRO, and Compliance Head detailing monthly uptime, regulatory posture, and disaster recovery drill scores.",
+  "refresh": "5m",
+  "tags": [
+    "executive",
+    "compliance",
+    "uptime",
+    "rbi",
+    "bcrb"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Trailing 30-Day Platform Uptime (%)",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "paysecure_monthly_uptime_percentage"
+        }
+      ],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": 0,
+            "color": "red"
+          },
+          {
+            "value": 99.92,
+            "color": "yellow"
+          },
+          {
+            "value": 99.99,
+            "color": "green"
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "DR Readiness Score (/100)",
+      "type": "stat",
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "paysecure_dr_readiness_composite_score"
+        }
+      ],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": 0,
+            "color": "red"
+          },
+          {
+            "value": 85,
+            "color": "yellow"
+          },
+          {
+            "value": 95,
+            "color": "green"
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Monthly Infrastructure Spend vs Budget (INR)",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "paysecure_monthly_spend_inr"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "currencyINR"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "title": "Open Regulatory / PCI DSS Audit Findings",
+      "type": "stat",
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "paysecure_open_audit_findings_count"
+        }
+      ],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": 0,
+            "color": "green"
+          },
+          {
+            "value": 1,
+            "color": "yellow"
+          },
+          {
+            "value": 3,
+            "color": "red"
+          }
+        ]
+      }
+    }
+  ]
+}

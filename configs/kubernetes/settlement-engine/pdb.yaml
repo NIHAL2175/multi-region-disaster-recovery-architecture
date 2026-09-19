@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: settlement-engine-pdb
+  namespace: paysecure
+spec:
+  minAvailable: "60%"
+  selector:
+    matchLabels:
+      app: settlement-engine

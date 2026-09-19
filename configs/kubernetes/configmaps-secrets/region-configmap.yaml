@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: region-config
+  namespace: paysecure
+data:
+  aws-region: "ap-south-1"
+  dr-role: "primary"
+  aurora-endpoint: "paysecure-primary.cluster-xyz.ap-south-1.rds.amazonaws.com"
+  kafka-bootstrap: "b-1.paysecure-msk.xyz.c3.kafka.ap-south-1.amazonaws.com:9094"
+  redis-endpoint: "paysecure-redis-primary.xyz.cache.amazonaws.com"
+  idempotency-table: "paysecure-idempotency-sessions"

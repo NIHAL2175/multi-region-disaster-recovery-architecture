@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: transaction-processor
+  namespace: paysecure
+  labels:
+    app: transaction-processor
+    tier: backend
+spec:
+  replicas: 24
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 6
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: transaction-processor
+  template:
+    metadata:
+      labels:
+        app: transaction-processor
+        tier: backend
+    spec:
+      containers:
+      - name: transaction-processor
+        image: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/paysecure/transaction-processor:v2.4.0
+        ports:
+        - containerPort: 9090
+          name: grpc
+        resources:
+          requests:
+            cpu: "1500m"
+            memory: "2Gi"
+          limits:
+            cpu: "3000m"
+            memory: "4Gi"
+        readinessProbe:
+          tcpSocket:
+            port: 9090
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        livenessProbe:
+          tcpSocket:
+            port: 9090
+          initialDelaySeconds: 40
+          periodSeconds: 10
+        env:
+        - name: DB_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: region-config
+              key: aurora-endpoint
+        - name: KAFKA_BOOTSTRAP
+          valueFrom:
+            configMapKeyRef:
+              name: region-config
+              key: kafka-bootstrap

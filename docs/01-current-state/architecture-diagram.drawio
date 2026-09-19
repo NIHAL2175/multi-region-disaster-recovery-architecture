@@ -1,0 +1,131 @@
+<mxfile host="app.diagrams.net" modified="2026-09-12T12:00:00.000Z" agent="Antigravity Architecture Engine" version="21.0.0" type="device">
+  <diagram id="paysecure-current-state" name="PaySecure Current Single-Region Architecture">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1600" pageHeight="1100" background="#F8FAFC">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <mxCell id="aws_cloud" value="AWS Cloud: ap-south-1 (Mumbai Region) - Single Region Deployment [SPOF-1]" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#FFF8E1;strokeColor=#FFB300;strokeWidth=2;dashed=1;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#5D4037;align=left;spacingLeft=20;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="40" width="1520" height="1000" as="geometry" />
+        </mxCell>
+
+        <mxCell id="r53" value="AWS Route 53 DNS: api.paysecure.in&#xa;(Single A-Record pointing to Mumbai ALB) [SPOF-3]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#8C4FFF;strokeColor=#593096;fontColor=#ffffff;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="640" y="70" width="320" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="vpc" value="Production VPC: 10.100.0.0/16" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8F5E9;strokeColor=#4CAF50;strokeWidth=2;verticalAlign=top;fontStyle=1;fontSize=13;fontColor=#1B5E20;align=left;spacingLeft=20;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="70" y="150" width="1460" height="860" as="geometry" />
+        </mxCell>
+
+        <mxCell id="az_a" value="Availability Zone ap-south-1a" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#9E9E9E;dashed=1;verticalAlign=top;fontStyle=1;fontColor=#424242;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="100" y="200" width="420" height="780" as="geometry" />
+        </mxCell>
+
+        <mxCell id="az_b" value="Availability Zone ap-south-1b" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#9E9E9E;dashed=1;verticalAlign=top;fontStyle=1;fontColor=#424242;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="540" y="200" width="420" height="780" as="geometry" />
+        </mxCell>
+
+        <mxCell id="az_c" value="Availability Zone ap-south-1c" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FAFAFA;strokeColor=#9E9E9E;dashed=1;verticalAlign=top;fontStyle=1;fontColor=#424242;align=left;spacingLeft=15;" vertex="1" parent="1">
+          <mxGeometry x="980" y="200" width="520" height="780" as="geometry" />
+        </mxCell>
+
+        <mxCell id="alb_a" value="ALB Node A + WAFv2&#xa;10.100.1.0/24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0288D1;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="120" y="240" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="alb_b" value="ALB Node B + WAFv2&#xa;10.100.2.0/24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0288D1;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="560" y="240" width="180" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="alb_c" value="ALB Node C + WAFv2&#xa;10.100.3.0/24" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E1F5FE;strokeColor=#0288D1;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="240" width="180" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eks_container" value="Amazon EKS Cluster: paysecure-mumbai-prod (24 x m6i.2xlarge Worker Nodes)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#EDE7F6;strokeColor=#673AB7;verticalAlign=top;fontStyle=1;fontColor=#311B92;align=left;spacingLeft=15;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="110" y="320" width="1370" height="340" as="geometry" />
+        </mxCell>
+
+        <mxCell id="svc_payment_api" value="payment-api&#xa;(18 Pods, HPA)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D1C4E9;strokeColor=#512DA8;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="130" y="370" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_txn_proc" value="transaction-processor&#xa;(24 Pods, HPA)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D1C4E9;strokeColor=#512DA8;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="310" y="370" width="160" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_rate_limit" value="rate-limiter&#xa;(12 Pods)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D1C4E9;strokeColor=#512DA8;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="490" y="370" width="140" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_fraud" value="fraud-detection&#xa;(16 Pods)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D1C4E9;strokeColor=#512DA8;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="650" y="370" width="150" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="cde_box" value="PCI-DSS CDE Boundary (paysecure-cde Namespace)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFEBEE;strokeColor=#D32F2F;strokeWidth=2;dashed=1;verticalAlign=top;fontStyle=1;fontColor=#B71C1C;align=left;spacingLeft=10;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="350" width="460" height="290" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_token" value="tokenisation-service&#xa;(8 Pods, mTLS gRPC 8443)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#C62828;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="390" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="kms_key" value="AWS KMS Single-Region Key&#xa;Key ID: mrk-cde-mumbai [SPOF-6]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE0B2;strokeColor=#E65100;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="470" width="200" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="svc_settlement" value="settlement-engine&#xa;(8 Pods)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="130" y="450" width="160" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_recon" value="reconciliation-worker&#xa;(6 Pods)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="310" y="450" width="160" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_portal" value="merchant-portal&#xa;(6 Pods)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="490" y="450" width="140" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_webhook" value="webhook-dispatcher&#xa;(16 Pods)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="650" y="450" width="150" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_notify" value="notification-service&#xa;(8 Pods)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="130" y="520" width="160" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_audit" value="audit-logger&#xa;(12 Pods)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="310" y="520" width="160" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="svc_health" value="health-monitor&#xa;(4 Pods)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#E8EAF6;strokeColor=#3F51B5;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="490" y="520" width="140" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="data_container" value="Stateful Persistence Tier (Isolated Private Subnets: 10.100.30.0/24, 31.0/24, 32.0/24)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF3E0;strokeColor=#FF9800;verticalAlign=top;fontStyle=1;fontColor=#E65100;align=left;spacingLeft=15;spacingTop=5;" vertex="1" parent="1">
+          <mxGeometry x="110" y="680" width="1370" height="280" as="geometry" />
+        </mxCell>
+
+        <mxCell id="aurora_writer" value="Aurora PG Writer (r6g.2xlarge)&#xa;AZ ap-south-1a [SPOF-2]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFE082;strokeColor=#FFA000;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="130" y="730" width="220" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="aurora_reader1" value="Aurora PG Reader 1 (r6g.2xlarge)&#xa;AZ ap-south-1b" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFA000;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="130" y="800" width="220" height="45" as="geometry" />
+        </mxCell>
+        <mxCell id="aurora_reader2" value="Aurora PG Reader 2 (r6g.2xlarge)&#xa;AZ ap-south-1c" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFA000;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="130" y="860" width="220" height="45" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dynamo" value="Amazon DynamoDB: paysecure-idempotency&#xa;10k RCU / 5k WCU - Single Region [SPOF-4]" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="730" width="280" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="redis" value="ElastiCache Redis 7.1 Cluster Mode&#xa;3 Shards / 6 Nodes (cache.r6g.xlarge)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFCDD2;strokeColor=#D32F2F;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="400" y="810" width="280" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="msk" value="Amazon MSK Kafka Cluster&#xa;6 Brokers across 3 AZs [SPOF-5]&#xa;50,000 msgs/sec" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#C8E6C9;strokeColor=#388E3C;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="720" y="730" width="260" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tgw" value="AWS Transit Gateway &amp; Direct Connect&#xa;Single Mumbai Hub [SPOF-7]&#xa;Partner Banks (HDFC, ICICI, SBI, NPCI)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#CFD8DC;strokeColor=#455A64;fontStyle=1;fontSize=11;" vertex="1" parent="1">
+          <mxGeometry x="1020" y="730" width="300" height="65" as="geometry" />
+        </mxCell>
+
+        <mxCell id="edge1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;strokeColor=#8C4FFF;" edge="1" parent="1" source="r53" target="alb_b">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge2" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;strokeWidth=2;strokeColor=#0288D1;" edge="1" parent="1" source="alb_b" target="svc_payment_api">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

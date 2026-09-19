@@ -1,0 +1,78 @@
+{
+  "title": "PaySecure Gateway - Merchant Impact & Channel Health",
+  "description": "Transaction success metrics across enterprise, mid-market, and aggregator merchants, and per-payment method SLA tracking.",
+  "refresh": "1m",
+  "tags": [
+    "merchant",
+    "business",
+    "sla",
+    "upi",
+    "cards"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "UPI Channel Success Rate (%)",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "rate(payment_success{method='upi'}[2m]) / rate(payment_attempts{method='upi'}[2m]) * 100"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Cards Channel Success Rate (%)",
+      "type": "stat",
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "rate(payment_success{method='cards'}[2m]) / rate(payment_attempts{method='cards'}[2m]) * 100"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Net Banking Success Rate (%)",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "rate(payment_success{method='netbanking'}[2m]) / rate(payment_attempts{method='netbanking'}[2m]) * 100"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Merchants Affected by Latency Degradation",
+      "type": "stat",
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "count(paysecure_merchant_latency_exceeded_count)"
+        }
+      ]
+    }
+  ]
+}

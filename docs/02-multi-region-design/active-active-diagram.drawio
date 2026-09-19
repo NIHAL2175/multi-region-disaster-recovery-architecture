@@ -1,0 +1,48 @@
+<mxfile host="app.diagrams.net" modified="2026-09-12T12:00:00.000Z" agent="Antigravity Architecture Engine" version="21.0.0" type="device">
+  <diagram id="paysecure-active-active" name="PaySecure Active-Active Architecture">
+    <mxGraphModel dx="1422" dy="794" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1100" background="#F8FAFC">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <mxCell id="dns_lbr" value="AWS Route 53 Latency-Based Routing (LBR) &amp; Global Accelerator: api.paysecure.in&#xa;Dual Active Anycast Ingress | Health Checks: 10s Fast Intervals | Dynamic Traffic Shift" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#00897B;strokeColor=#004D40;fontColor=#ffffff;fontStyle=1;fontSize=13;" vertex="1" parent="1">
+          <mxGeometry x="550" y="40" width="700" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="reg_mum_aa" value="ACTIVE REGION 1: AWS ap-south-1 (Mumbai) - 50% TRAFFIC (Partition A)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;fillColor=#E0F2F1;strokeColor=#00695C;strokeWidth=2.5;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#004D40;align=left;spacingLeft=20;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="40" y="140" width="820" height="900" as="geometry" />
+        </mxCell>
+
+        <mxCell id="reg_hyd_aa" value="ACTIVE REGION 2: AWS ap-south-2 (Hyderabad) - 50% TRAFFIC (Partition B)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=3;fillColor=#E0F2F1;strokeColor=#00695C;strokeWidth=2.5;verticalAlign=top;fontStyle=1;fontSize=14;fontColor=#004D40;align=left;spacingLeft=20;spacingTop=10;" vertex="1" parent="1">
+          <mxGeometry x="940" y="140" width="820" height="900" as="geometry" />
+        </mxCell>
+
+        <mxCell id="alb_mum_aa" value="ALB Node Mumbai + WAFv2&#xa;Accepting Partition A (North/West Merchants)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#80CBC4;strokeColor=#004D40;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="250" y="200" width="400" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="alb_hyd_aa" value="ALB Node Hyderabad + WAFv2&#xa;Accepting Partition B (South/East Merchants)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#80CBC4;strokeColor=#004D40;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1150" y="200" width="400" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="eks_mum_aa" value="EKS Cluster: paysecure-mumbai (24 Nodes / 180 Pods)&#xa;Home Region Writer for Partition A" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D1C4E9;strokeColor=#512DA8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="280" width="700" height="180" as="geometry" />
+        </mxCell>
+        <mxCell id="eks_hyd_aa" value="EKS Cluster: paysecure-hyderabad (24 Nodes / 180 Pods)&#xa;Home Region Writer for Partition B" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#D1C4E9;strokeColor=#512DA8;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1000" y="280" width="700" height="180" as="geometry" />
+        </mxCell>
+
+        <mxCell id="dyn_mum_aa" value="DynamoDB Global Table (Mumbai)&#xa;Multi-Active Idempotency &amp; Lease Fencing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="100" y="500" width="340" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="dyn_hyd_aa" value="DynamoDB Global Table (Hyderabad)&#xa;Multi-Active Idempotency &amp; Lease Fencing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#BBDEFB;strokeColor=#1976D2;fontStyle=1;" vertex="1" parent="1">
+          <mxGeometry x="1360" y="500" width="340" height="60" as="geometry" />
+        </mxCell>
+
+        <mxCell id="tgw_write_fwd" value="Inter-Region Transit Gateway (100 Gbps Dark Fiber)&#xa;Aurora Write Forwarding (15-20 ms RTT) | CAP Theorem Consistency Fencing" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#FFF8E1;strokeColor=#FFA000;fontStyle=1;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="400" y="620" width="1000" height="60" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

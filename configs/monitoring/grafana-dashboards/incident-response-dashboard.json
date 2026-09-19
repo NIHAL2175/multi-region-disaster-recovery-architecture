@@ -1,0 +1,158 @@
+{
+  "title": "PaySecure Gateway - Real-Time Incident Response & War Room",
+  "description": "High-frequency operational metrics, transaction processing rates, circuit breaker states, and error telemetry for on-call incident commanders.",
+  "refresh": "10s",
+  "tags": [
+    "incident",
+    "war-room",
+    "on-call",
+    "telemetry"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Active Transaction Throughput (TPS)",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(payment_transactions_total[1m]))"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Payment Success Rate (%)",
+      "type": "stat",
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "(sum(rate(payment_transactions_success_total[1m])) / sum(rate(payment_transactions_total[1m]))) * 100"
+        }
+      ],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": 0,
+            "color": "red"
+          },
+          {
+            "value": 99.0,
+            "color": "yellow"
+          },
+          {
+            "value": 99.8,
+            "color": "green"
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "P99 Transaction Latency (ms)",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(payment_transaction_duration_seconds_bucket[2m])) by (le)) * 1000"
+        }
+      ],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": 0,
+            "color": "green"
+          },
+          {
+            "value": 200,
+            "color": "yellow"
+          },
+          {
+            "value": 300,
+            "color": "red"
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "title": "Active Severity Alerts (P1 / P2)",
+      "type": "stat",
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "count(ALERTS{alertstate='firing',severity=~'P1.*|P2.*'})"
+        }
+      ],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": 0,
+            "color": "green"
+          },
+          {
+            "value": 1,
+            "color": "red"
+          }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "title": "Microservice Error Rate Breakdown (HTTP 5xx)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(http_requests_total{status=~'5..'}[1m])) by (service)",
+          "legendFormat": "{{service}} 5xx"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Circuit Breaker Trip State (Fraud, NPCI, Card Gateways)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "circuit_breaker_open_status",
+          "legendFormat": "{{downstream_circuit}} State"
+        }
+      ]
+    }
+  ]
+}

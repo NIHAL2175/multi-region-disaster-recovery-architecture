@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: transaction-processor
+  namespace: paysecure
+spec:
+  type: ClusterIP
+  selector:
+    app: transaction-processor
+  ports:
+  - port: 9090
+    targetPort: 9090
+    name: grpc

@@ -1,0 +1,94 @@
+{
+  "title": "PaySecure Gateway - Multi-Region Infrastructure Cost Tracking",
+  "description": "Daily and monthly cloud spend breakdown by region (Mumbai vs Hyderabad), DR tier utilization, and FinOps savings plan coverage.",
+  "refresh": "15m",
+  "tags": [
+    "finops",
+    "costs",
+    "aws",
+    "budget"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "Primary Region (Mumbai ap-south-1) Spend MTD",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "paysecure_cost_mtd_inr{region='ap-south-1'}"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "DR Region (Hyderabad ap-south-2) Spend MTD",
+      "type": "stat",
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "paysecure_cost_mtd_inr{region='ap-south-2'}"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Compute Savings Plans Utilization Rate (%)",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "aws_savings_plans_utilization_percent"
+        }
+      ],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": 0,
+            "color": "red"
+          },
+          {
+            "value": 85,
+            "color": "yellow"
+          },
+          {
+            "value": 95,
+            "color": "green"
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "title": "Projected Annual Spend Multiplier (Target: 1.62x)",
+      "type": "stat",
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "paysecure_projected_spend_multiplier"
+        }
+      ]
+    }
+  ]
+}

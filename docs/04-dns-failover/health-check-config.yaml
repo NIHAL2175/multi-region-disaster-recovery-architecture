@@ -1,0 +1,77 @@
+version: '1.0'
+metadata:
+  organization: PaySecure Gateway Private Limited
+  system: Route53 Multi-Region Health Checking
+  managed_by: Terraform / GitOps
+health_checks:
+- id: hc-mumbai-deep-primary
+  name: paysecure-mumbai-deep-health
+  type: HTTPS
+  fqdn: api-mum.paysecure.in
+  port: 443
+  resource_path: /health/deep
+  request_interval: 10
+  failure_threshold: 3
+  measure_latency: true
+  enable_sni: true
+  regions:
+  - ap-south-1
+  - ap-southeast-1
+  - ap-northeast-1
+  - eu-central-1
+  - us-east-1
+  - us-west-2
+  - sa-east-1
+  - af-south-1
+  tags:
+    Environment: Production
+    Region: ap-south-1
+    DR-Tier: Primary
+    Criticality: P1-Fatal
+- id: hc-hyd-deep-secondary
+  name: paysecure-hyd-deep-health
+  type: HTTPS
+  fqdn: api-hyd.paysecure.in
+  port: 443
+  resource_path: /health/deep
+  request_interval: 10
+  failure_threshold: 3
+  measure_latency: true
+  enable_sni: true
+  regions:
+  - ap-south-1
+  - ap-southeast-1
+  - ap-northeast-1
+  - eu-central-1
+  - us-east-1
+  - us-west-2
+  - sa-east-1
+  - af-south-1
+  tags:
+    Environment: Production
+    Region: ap-south-2
+    DR-Tier: Secondary
+    Criticality: P1-Fatal
+- id: hc-mumbai-calculated-composite
+  name: paysecure-mumbai-composite-health
+  type: CALCULATED
+  child_health_checks:
+  - hc-mumbai-deep-primary
+  - hc-cw-mumbai-aurora-lag
+  - hc-cw-mumbai-alb-5xx
+  health_threshold: 2
+  tags:
+    Environment: Production
+    Region: ap-south-1
+    Role: Master-Traffic-Gate
+cloudwatch_alarm_health_checks:
+- id: hc-cw-mumbai-aurora-lag
+  name: cw-alarm-aurora-replication-lag
+  alarm_name: paysecure-mumbai-aurora-replication-lag-critical
+  alarm_region: ap-south-1
+  insufficient_data_health_status: Unhealthy
+- id: hc-cw-mumbai-alb-5xx
+  name: cw-alarm-alb-5xx-rate
+  alarm_name: paysecure-mumbai-alb-high-5xx-error-rate
+  alarm_region: ap-south-1
+  insufficient_data_health_status: Healthy

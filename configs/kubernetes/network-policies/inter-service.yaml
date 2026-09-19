@@ -1,0 +1,10 @@
+# Default Deny-All Ingress for Production Microservices
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: default-deny-all
+  namespace: paysecure
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress

@@ -1,0 +1,63 @@
+{
+  "Comment": "PaySecure Global DNS Failover Record Sets for api.paysecure.in",
+  "Changes": [
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "api.paysecure.in.",
+        "Type": "A",
+        "SetIdentifier": "paysecure-mumbai-primary-ingress",
+        "Failover": "PRIMARY",
+        "TTL": 30,
+        "AliasTarget": {
+          "HostedZoneId": "ZP9PDOKONANOF",
+          "DNSName": "dualstack.prod-mumbai-alb-198273645.ap-south-1.elb.amazonaws.com.",
+          "EvaluateTargetHealth": true
+        },
+        "HealthCheckId": "hc-mumbai-calculated-composite"
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "api.paysecure.in.",
+        "Type": "A",
+        "SetIdentifier": "paysecure-hyderabad-secondary-ingress",
+        "Failover": "SECONDARY",
+        "TTL": 30,
+        "AliasTarget": {
+          "HostedZoneId": "Z103847291823",
+          "DNSName": "dualstack.dr-hyd-alb-981273645.ap-south-2.elb.amazonaws.com.",
+          "EvaluateTargetHealth": true
+        },
+        "HealthCheckId": "hc-hyd-deep-secondary"
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "api-mum.paysecure.in.",
+        "Type": "A",
+        "TTL": 60,
+        "AliasTarget": {
+          "HostedZoneId": "ZP9PDOKONANOF",
+          "DNSName": "dualstack.prod-mumbai-alb-198273645.ap-south-1.elb.amazonaws.com.",
+          "EvaluateTargetHealth": false
+        }
+      }
+    },
+    {
+      "Action": "UPSERT",
+      "ResourceRecordSet": {
+        "Name": "api-hyd.paysecure.in.",
+        "Type": "A",
+        "TTL": 60,
+        "AliasTarget": {
+          "HostedZoneId": "Z103847291823",
+          "DNSName": "dualstack.dr-hyd-alb-981273645.ap-south-2.elb.amazonaws.com.",
+          "EvaluateTargetHealth": false
+        }
+      }
+    }
+  ]
+}

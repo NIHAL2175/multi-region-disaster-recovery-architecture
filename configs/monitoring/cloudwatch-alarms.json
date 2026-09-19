@@ -1,0 +1,128 @@
+{
+  "Alarms": [
+    {
+      "AlarmName": "PaySecure-Aurora-GlobalDB-ReplicationLag-P1",
+      "AlarmDescription": "Triggered when Aurora PostgreSQL cross-region replication lag between Mumbai and Hyderabad exceeds 500ms for 2 consecutive 60s periods.",
+      "ActionsEnabled": true,
+      "AlarmActions": [
+        "arn:aws:sns:ap-south-1:123456789012:paysecure-pagerduty-p1-sev",
+        "arn:aws:sns:ap-south-1:123456789012:paysecure-dr-automation-topic"
+      ],
+      "MetricName": "AuroraGlobalDBReplicationLag",
+      "Namespace": "AWS/RDS",
+      "Statistic": "Average",
+      "Dimensions": [
+        {
+          "Name": "DBClusterIdentifier",
+          "Value": "paysecure-hyd-cluster"
+        }
+      ],
+      "Period": 60,
+      "EvaluationPeriods": 2,
+      "Threshold": 500.0,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "TreatMissingData": "breaching"
+    },
+    {
+      "AlarmName": "PaySecure-PaymentAPI-SuccessRate-P1",
+      "AlarmDescription": "Triggers when 2xx HTTP response ratio drops below 99.5% on the primary payment gateway ALB.",
+      "ActionsEnabled": true,
+      "AlarmActions": [
+        "arn:aws:sns:ap-south-1:123456789012:paysecure-pagerduty-p1-sev"
+      ],
+      "Metrics": [
+        {
+          "Id": "e1",
+          "Expression": "(m1 / m2) * 100",
+          "Label": "SuccessRatePercent",
+          "ReturnData": true
+        },
+        {
+          "Id": "m1",
+          "MetricStat": {
+            "Metric": {
+              "Namespace": "AWS/ApplicationELB",
+              "MetricName": "HTTPCode_Target_2XX_Count",
+              "Dimensions": [
+                {
+                  "Name": "LoadBalancer",
+                  "Value": "app/paysecure-mum-alb/50dc6c495c0c9188"
+                }
+              ]
+            },
+            "Period": 60,
+            "Stat": "Sum"
+          },
+          "ReturnData": false
+        },
+        {
+          "Id": "m2",
+          "MetricStat": {
+            "Metric": {
+              "Namespace": "AWS/ApplicationELB",
+              "MetricName": "RequestCount",
+              "Dimensions": [
+                {
+                  "Name": "LoadBalancer",
+                  "Value": "app/paysecure-mum-alb/50dc6c495c0c9188"
+                }
+              ]
+            },
+            "Period": 60,
+            "Stat": "Sum"
+          },
+          "ReturnData": false
+        }
+      ],
+      "EvaluationPeriods": 2,
+      "Threshold": 99.5,
+      "ComparisonOperator": "LessThanThreshold",
+      "TreatMissingData": "breaching"
+    },
+    {
+      "AlarmName": "PaySecure-Route53-DeepHealthCheck-Failure-P1",
+      "AlarmDescription": "Fires when Route 53 composite health check for Mumbai primary gateway turns unhealthy.",
+      "ActionsEnabled": true,
+      "AlarmActions": [
+        "arn:aws:sns:ap-south-1:123456789012:paysecure-pagerduty-p1-sev",
+        "arn:aws:sns:ap-south-1:123456789012:paysecure-dr-failover-lambda"
+      ],
+      "MetricName": "HealthCheckStatus",
+      "Namespace": "AWS/Route53",
+      "Statistic": "Minimum",
+      "Dimensions": [
+        {
+          "Name": "HealthCheckId",
+          "Value": "hc-paysecure-primary-composite"
+        }
+      ],
+      "Period": 10,
+      "EvaluationPeriods": 3,
+      "Threshold": 1.0,
+      "ComparisonOperator": "LessThanThreshold",
+      "TreatMissingData": "breaching"
+    },
+    {
+      "AlarmName": "PaySecure-KMS-Anomaly-CallCount-P1",
+      "AlarmDescription": "Alerts when KMS Decrypt operation rate exceeds 3x baseline indicating credential theft or mass data dumping.",
+      "ActionsEnabled": true,
+      "AlarmActions": [
+        "arn:aws:sns:ap-south-1:123456789012:paysecure-security-war-room"
+      ],
+      "MetricName": "KMSKeyOperationsCount",
+      "Namespace": "PaySecure/Security",
+      "Statistic": "Sum",
+      "Dimensions": [
+        {
+          "Name": "KeyId",
+          "Value": "mrk-paysecure-cde-cardholder-key"
+        }
+      ],
+      "Period": 60,
+      "EvaluationPeriods": 2,
+      "Threshold": 15000.0,
+      "ComparisonOperator": "GreaterThanThreshold",
+      "TreatMissingData": "notBreaching"
+    }
+  ]
+}

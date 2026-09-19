@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PaySecure Gateway | Multi-Region Disaster Recovery Operations Center</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="theme-dark">
+  <!-- Top Global Header -->
+  <header class="app-header">
+    <div class="header-left">
+      <div class="brand-logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M12 2L3 7v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-9-5z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">PaySecure Gateway <span class="badge-rbi">RBI Regulated PPA</span></div>
+          <div class="brand-subtitle">Multi-Region Disaster Recovery Control Center &bull; ap-south-1 &harr; ap-south-2</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live System Metric Tickers -->
+    <div class="header-tickers">
+      <div class="ticker-box">
+        <div class="ticker-label">TARGET UPTIME</div>
+        <div class="ticker-value text-accent" id="ticker-uptime">99.995%</div>
+        <div class="ticker-meta">SLA: 99.99%</div>
+      </div>
+      <div class="ticker-box">
+        <div class="ticker-label">ACTIVE WRITER</div>
+        <div class="ticker-value text-success" id="ticker-writer">ap-south-1</div>
+        <div class="ticker-meta">Mumbai Primary</div>
+      </div>
+      <div class="ticker-box">
+        <div class="ticker-label">RPO GUARANTEE</div>
+        <div class="ticker-value text-emerald" id="ticker-rpo">&lt; 0.4s</div>
+        <div class="ticker-meta">Mandate: &lt; 60s</div>
+      </div>
+      <div class="ticker-box">
+        <div class="ticker-label">ESTIMATED RTO</div>
+        <div class="ticker-value text-cyan" id="ticker-rto">3m 58s</div>
+        <div class="ticker-meta">Mandate: &lt; 5m</div>
+      </div>
+      <div class="ticker-box">
+        <div class="ticker-label">DAILY VOLUME</div>
+        <div class="ticker-value text-white">₹500 Cr</div>
+        <div class="ticker-meta">3.2M Txns / Day</div>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-outline" id="btn-deep-health">
+        <span class="pulse-dot green"></span> Run Deep Health Probe
+      </button>
+      <button class="btn btn-danger" id="btn-emergency-failover">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Emergency Failover
+      </button>
+    </div>
+  </header>
+
+  <!-- Navigation Tabs -->
+  <nav class="nav-bar">
+    <div class="nav-tabs">
+      <button class="nav-tab active" data-tab="tab-topology">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+        Live Multi-Region Topology
+      </button>
+      <button class="nav-tab" data-tab="tab-arena">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+        Disaster Simulator & Arena Mode (12 Scenarios)
+      </button>
+      <button class="nav-tab" data-tab="tab-runbooks">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        12 Production Runbooks
+      </button>
+      <button class="nav-tab" data-tab="tab-bcrb">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        BCRB Board Defense (10 Questions)
+      </button>
+      <button class="nav-tab" data-tab="tab-cost">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        FinOps Cost Model & ROI
+      </button>
+      <button class="nav-tab" data-tab="tab-errors">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        5 Deliberate Errors Found Audit
+      </button>
+    </div>
+    <div class="system-status-indicator" id="system-status-badge">
+      <span class="status-dot green"></span> SYSTEM OPERATIONAL
+    </div>
+  </nav>
+
+  <!-- Main View Container -->
+  <main class="main-content">
+    
+    <!-- TAB 1: TOPOLOGY & TELEMETRY -->
+    <section class="tab-pane active" id="tab-topology">
+      <!-- Top Metrics Cards -->
+      <div class="grid-cards-4">
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-title">CURRENT TPS THROUGHPUT</span>
+            <span class="stat-badge cyan">Peak 1,200 TPS</span>
+          </div>
+          <div class="stat-num" id="live-tps">1,184 <span class="unit">TPS</span></div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar" id="bar-tps" style="width: 82%;"></div>
+          </div>
+          <div class="stat-footer">Processing 45,000 merchants across India</div>
+        </div>
+
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-title">P99 TRANSACTION LATENCY</span>
+            <span class="stat-badge green">NPCI &lt; 300ms</span>
+          </div>
+          <div class="stat-num" id="live-p99">178 <span class="unit">ms</span></div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar bg-green" id="bar-p99" style="width: 59%;"></div>
+          </div>
+          <div class="stat-footer">Budget margin: +122ms remaining</div>
+        </div>
+
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-title">AURORA GLOBAL STORAGE LAG</span>
+            <span class="stat-badge emerald">RPO Target &lt; 1m</span>
+          </div>
+          <div class="stat-num" id="live-aurora-lag">142 <span class="unit">ms</span></div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar bg-emerald" id="bar-aurora" style="width: 28%;"></div>
+          </div>
+          <div class="stat-footer">Direct storage engine physical replication</div>
+        </div>
+
+        <div class="glass-card stat-card">
+          <div class="stat-header">
+            <span class="stat-title">CROSS-REGION RTT LATENCY</span>
+            <span class="stat-badge purple">Transit Gateway</span>
+          </div>
+          <div class="stat-num" id="live-rtt">18.4 <span class="unit">ms</span></div>
+          <div class="progress-bar-wrap">
+            <div class="progress-bar bg-purple" style="width: 45%;"></div>
+          </div>
+          <div class="stat-footer">Dedicated AWS Backbone (Mumbai &harr; Hyderabad)</div>
+        </div>
+      </div>
+
+      <!-- Interactive Multi-Region Architecture Topology Canvas -->
+      <div class="glass-card topology-container">
+        <div class="topology-header">
+          <div>
+            <h3>Multi-Region Disaster Recovery Interactive Canvas</h3>
+            <p class="text-muted">Real-time packet streaming between Primary Mumbai (ap-south-1) and Secondary Hyderabad (ap-south-2)</p>
+          </div>
+          <div class="topology-controls">
+            <button class="btn btn-sm btn-secondary" id="btn-toggle-traffic">Pause Animation</button>
+            <button class="btn btn-sm btn-outline" id="btn-reconcile-split">Run Split-Brain Reconciler</button>
+            <button class="btn btn-sm btn-success" id="btn-failback">Restore Primary (Failback)</button>
+          </div>
+        </div>
+
+        <!-- Canvas for dynamic packet routing and connections -->
+        <div class="canvas-wrapper">
+          <canvas id="topologyCanvas"></canvas>
+
+          <!-- Interactive Node Overlays -->
+          <div class="topo-node client-node" style="left: 6%; top: 40%;">
+            <div class="node-icon">📱</div>
+            <div class="node-label">45,000 Merchants &amp; UPI Clients</div>
+            <div class="node-sub">1,200 TPS Peak Load</div>
+          </div>
+
+          <div class="topo-node r53-node" style="left: 22%; top: 40%;">
+            <div class="node-icon">🌐</div>
+            <div class="node-label">Route 53 DNS Failover</div>
+            <div class="node-sub" id="dns-active-status">Active Route: Mumbai (ap-south-1)</div>
+          </div>
+
+          <!-- Region 1: Mumbai Box -->
+          <div class="region-box region-mumbai" style="left: 36%; top: 10%;">
+            <div class="region-header">
+              <span class="region-flag">📍 Primary Region: Mumbai (ap-south-1)</span>
+              <span class="region-role badge-primary" id="badge-mum-role">PRIMARY WRITER</span>
+            </div>
+            <div class="region-components">
+              <div class="comp-pill" id="comp-mum-alb">
+                <span class="comp-indicator green"></span> ALB + AWS WAF + Shield
+              </div>
+              <div class="comp-pill" id="comp-mum-eks">
+                <span class="comp-indicator green"></span> EKS Clusters (24 Nodes, 180 Pods)
+              </div>
+              <div class="comp-pill" id="comp-mum-aurora">
+                <span class="comp-indicator green"></span> Aurora PostgreSQL 15.4 (Writer)
+              </div>
+              <div class="comp-pill" id="comp-mum-dynamo">
+                <span class="comp-indicator green"></span> DynamoDB Global Table (Writer)
+              </div>
+              <div class="comp-pill" id="comp-mum-redis">
+                <span class="comp-indicator green"></span> ElastiCache Redis (Global Primary)
+              </div>
+              <div class="comp-pill" id="comp-mum-msk">
+                <span class="comp-indicator green"></span> MSK Kafka (6-Broker Cluster)
+              </div>
+            </div>
+          </div>
+
+          <!-- Cross-Region Replication Corridor -->
+          <div class="replication-corridor" style="left: 62%; top: 38%;">
+            <div class="corridor-label">&harr; Cross-Region Transit Gateway &harr;</div>
+            <div class="corridor-metrics">
+              <span>Aurora Lag: <strong id="corr-aurora">142ms</strong></span> &bull;
+              <span>DynamoDB: <strong id="corr-ddb">78ms</strong></span> &bull;
+              <span>RTT: <strong>18.4ms</strong></span>
+            </div>
+          </div>
+
+          <!-- Region 2: Hyderabad Box -->
+          <div class="region-box region-hyderabad" style="left: 74%; top: 10%;">
+            <div class="region-header">
+              <span class="region-flag">📍 DR Region: Hyderabad (ap-south-2)</span>
+              <span class="region-role badge-secondary" id="badge-hyd-role">HOT STANDBY</span>
+            </div>
+            <div class="region-components">
+              <div class="comp-pill" id="comp-hyd-alb">
+                <span class="comp-indicator green"></span> Standby ALB + AWS WAF
+              </div>
+              <div class="comp-pill" id="comp-hyd-eks">
+                <span class="comp-indicator green"></span> EKS Cluster (Warm Standby &rarr; Auto-scale)
+              </div>
+              <div class="comp-pill" id="comp-hyd-aurora">
+                <span class="comp-indicator green"></span> Aurora Global DB (Read Replica)
+              </div>
+              <div class="comp-pill" id="comp-hyd-dynamo">
+                <span class="comp-indicator green"></span> DynamoDB Global Table (Replica)
+              </div>
+              <div class="comp-pill" id="comp-hyd-redis">
+                <span class="comp-indicator green"></span> ElastiCache Global Datastore (Replica)
+              </div>
+              <div class="comp-pill" id="comp-hyd-msk">
+                <span class="comp-indicator green"></span> MSK Replicator Target
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Telemetry Charts & Live Event Log -->
+      <div class="grid-2-col">
+        <div class="glass-card">
+          <div class="card-header">
+            <h4>Live Transaction Throughput &amp; P99 Latency Telemetry</h4>
+            <span class="badge-live">LIVE 1s POLLING</span>
+          </div>
+          <div class="chart-wrap">
+            <canvas id="telemetryChart"></canvas>
+          </div>
+        </div>
+
+        <div class="glass-card">
+          <div class="card-header">
+            <h4>Real-Time DR Operations Audit Log</h4>
+            <button class="btn btn-sm btn-outline" id="btn-clear-logs">Clear</button>
+          </div>
+          <div class="log-stream" id="log-stream-box">
+            <!-- Log entries injected dynamically -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: ARENA MODE & 12 DISASTER SCENARIOS -->
+    <section class="tab-pane" id="tab-arena">
+      <div class="arena-banner glass-card">
+        <div class="arena-content">
+          <span class="badge-arena">ARENA MODE DRILL SIMULATOR</span>
+          <h2>Stress-Test PaySecure Gateway Against 12 Mandatory Disaster Scenarios</h2>
+          <p class="text-muted">Simulate actual failures across infrastructure, data corruption, DDoS, ransomware, and network split-brain. Evaluate automated Route 53 detection, Aurora Global Database promotion, and idempotency recovery.</p>
+        </div>
+        <div class="arena-stats">
+          <div class="mini-stat">
+            <span class="mini-label">RPO Target</span>
+            <span class="mini-val text-green">&lt; 1 Minute</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-label">RTO Target</span>
+            <span class="mini-val text-cyan">&lt; 5 Minutes</span>
+          </div>
+          <div class="mini-stat">
+            <span class="mini-label">Board Standard</span>
+            <span class="mini-val text-accent">1000-Pt Rubric</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active Drill Execution Modal / Card -->
+      <div class="glass-card drill-active-panel" id="drill-active-panel" style="display: none;">
+        <div class="drill-header">
+          <div class="drill-title-wrap">
+            <span class="pulse-dot red"></span>
+            <h3 id="active-drill-title">Scenario 1: Complete Primary Region Failure</h3>
+          </div>
+          <div class="drill-timers">
+            <div class="timer-box">
+              <span class="timer-label">ELAPSED TIME (RTO)</span>
+              <span class="timer-val" id="drill-timer-rto">00:00</span>
+            </div>
+            <div class="timer-box">
+              <span class="timer-label">SIMULATED DATA LOSS (RPO)</span>
+              <span class="timer-val text-green" id="drill-timer-rpo">0.38s</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="drill-progress-wrap">
+          <div class="drill-step-bar" id="drill-step-bar" style="width: 15%;"></div>
+        </div>
+
+        <div class="drill-steps-visualizer" id="drill-steps-visualizer">
+          <!-- Injected dynamically -->
+        </div>
+
+        <div class="drill-actions">
+          <button class="btn btn-success" id="btn-drill-failover">Execute Automated Failover Script</button>
+          <button class="btn btn-secondary" id="btn-drill-cancel">Abort Drill / Reset</button>
+        </div>
+      </div>
+
+      <!-- 12 Scenarios Grid -->
+      <div class="scenarios-grid" id="scenarios-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- TAB 3: 12 PRODUCTION RUNBOOKS -->
+    <section class="tab-pane" id="tab-runbooks">
+      <div class="runbook-layout">
+        <div class="runbook-sidebar glass-card">
+          <h4 class="sidebar-title">Runbooks Library (10-Section Standard)</h4>
+          <div class="runbook-list" id="runbook-nav-list">
+            <!-- List injected via JS -->
+          </div>
+        </div>
+        <div class="runbook-content glass-card" id="runbook-viewer">
+          <div class="runbook-placeholder">
+            <h3>Select a runbook from the left to inspect command-level procedures</h3>
+            <p class="text-muted">All 12 runbooks feature role assignments, AWS CLI commands, decision trees, and regulatory notification templates.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: BCRB BOARD DEFENSE -->
+    <section class="tab-pane" id="tab-bcrb">
+      <div class="bcrb-header glass-card">
+        <h2>Business Continuity Review Board (BCRB) Stakeholder Defense</h2>
+        <p class="text-muted">Pre-emptive architectural defense addressing all 10 challenge scenarios posed by the 5 simulated stakeholder personas.</p>
+        <div class="persona-chips">
+          <span class="persona-chip active" data-persona="all">All Stakeholders</span>
+          <span class="persona-chip" data-persona="cto">CTO (Rajesh Mehta)</span>
+          <span class="persona-chip" data-persona="cro">CRO (Priya Krishnan)</span>
+          <span class="persona-chip" data-persona="compliance">Compliance Head (Anand Sharma)</span>
+          <span class="persona-chip" data-persona="vp-eng">VP Engineering (Vikram Patel)</span>
+          <span class="persona-chip" data-persona="auditor">Big Four Auditor (Sarah Chen)</span>
+        </div>
+      </div>
+
+      <div class="bcrb-cards-container" id="bcrb-cards-container">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+    <!-- TAB 5: FINOPS COST MODEL & ROI -->
+    <section class="tab-pane" id="tab-cost">
+      <div class="glass-card cost-hero">
+        <div class="cost-summary-left">
+          <span class="badge-cost">FINOPS ARCHITECTURE ANALYSIS</span>
+          <h2>Infrastructure Spend &amp; Disaster Recovery ROI</h2>
+          <p class="text-muted">Comparing 4 DR tiers against PaySecure's ₹8.00 Cr baseline and ₹37.5 Lakh/hour downtime exposure.</p>
+        </div>
+        <div class="cost-summary-right">
+          <div class="roi-highlight">
+            <span class="roi-label">Selected Hot Standby Multiplier</span>
+            <span class="roi-val">1.62x</span>
+            <span class="roi-sub">₹12.98 Cr / yr (Savings Plans Optimized)</span>
+          </div>
+          <div class="roi-highlight">
+            <span class="roi-label">Single 1-Hr Outage Avoidance</span>
+            <span class="roi-val text-green">₹1.09 Cr</span>
+            <span class="roi-sub">Payback period: 8.9 months</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-4-tiers">
+        <div class="tier-card glass-card">
+          <div class="tier-badge">TIER 1</div>
+          <h3 class="tier-title">Cold Standby</h3>
+          <div class="tier-price">₹8.64 Cr <span>/ yr</span></div>
+          <div class="tier-multiplier">1.08x Spend Multiplier</div>
+          <ul class="tier-specs">
+            <li><strong>RPO:</strong> 4 &ndash; 24 Hours</li>
+            <li><strong>RTO:</strong> 8 &ndash; 12 Hours</li>
+            <li><strong>Infrastructure:</strong> IaC code-only</li>
+            <li><strong>Regulatory:</strong> <span class="text-danger">NON-COMPLIANT</span></li>
+          </ul>
+        </div>
+
+        <div class="tier-card glass-card">
+          <div class="tier-badge">TIER 2</div>
+          <h3 class="tier-title">Warm Standby</h3>
+          <div class="tier-price">₹11.20 Cr <span>/ yr</span></div>
+          <div class="tier-multiplier">1.40x Spend Multiplier</div>
+          <ul class="tier-specs">
+            <li><strong>RPO:</strong> 5 &ndash; 15 Minutes</li>
+            <li><strong>RTO:</strong> 30 &ndash; 60 Minutes</li>
+            <li><strong>Infrastructure:</strong> Minimal compute scale</li>
+            <li><strong>Regulatory:</strong> <span class="text-danger">Breaches 5-min RTO</span></li>
+          </ul>
+        </div>
+
+        <div class="tier-card glass-card active-recommendation">
+          <div class="tier-badge-rec">RECOMMENDED</div>
+          <div class="tier-badge">TIER 3</div>
+          <h3 class="tier-title">Hot Standby</h3>
+          <div class="tier-price">₹12.98 Cr <span>/ yr</span></div>
+          <div class="tier-multiplier text-accent">1.62x Spend Multiplier</div>
+          <ul class="tier-specs">
+            <li><strong>RPO:</strong> &lt; 1 Second (&lt; 60s mandate)</li>
+            <li><strong>RTO:</strong> 3m 58s (&lt; 5m mandate)</li>
+            <li><strong>Infrastructure:</strong> Full replica storage + warm EKS</li>
+            <li><strong>Regulatory:</strong> <span class="text-green">100% COMPLIANT</span></li>
+          </ul>
+        </div>
+
+        <div class="tier-card glass-card">
+          <div class="tier-badge">TIER 4</div>
+          <h3 class="tier-title">Active-Active</h3>
+          <div class="tier-price">₹16.42 Cr <span>/ yr</span></div>
+          <div class="tier-multiplier">2.05x Spend Multiplier</div>
+          <ul class="tier-specs">
+            <li><strong>RPO:</strong> Near-Zero</li>
+            <li><strong>RTO:</strong> Near-Zero (Instantaneous)</li>
+            <li><strong>Infrastructure:</strong> Dual writers in both regions</li>
+            <li><strong>Regulatory:</strong> Over-budget (Board: 1.4-1.65x)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 6: 5 DELIBERATE ERRORS FOUND -->
+    <section class="tab-pane" id="tab-errors">
+      <div class="glass-card errors-hero">
+        <span class="badge-error-hunter">ERROR HUNTER BADGE (100 BONUS POINTS)</span>
+        <h2>Forensic Audit: 5 Deliberate Errors Found in Project Specification</h2>
+        <p class="text-muted">Rigorous cross-referencing against official AWS technical documentation, RBI Master Directions, NPCI standards, and Terraform provider schemas.</p>
+      </div>
+
+      <div class="errors-list" id="errors-list-container">
+        <!-- Injected via JS -->
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Notification Toast -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

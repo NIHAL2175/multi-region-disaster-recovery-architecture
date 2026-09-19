@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-api
+  namespace: paysecure
+  labels:
+    app: payment-api
+    tier: frontend
+spec:
+  replicas: 18
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 4
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app: payment-api
+  template:
+    metadata:
+      labels:
+        app: payment-api
+        tier: frontend
+    spec:
+      containers:
+      - name: payment-api
+        image: 123456789012.dkr.ecr.ap-south-1.amazonaws.com/paysecure/payment-api:v2.4.0
+        ports:
+        - containerPort: 8080
+          name: http
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "1Gi"
+          limits:
+            cpu: "2000m"
+            memory: "2Gi"
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        env:
+        - name: DB_ENDPOINT
+          valueFrom:
+            configMapKeyRef:
+              name: region-config
+              key: aurora-endpoint
+        - name: CURRENT_REGION
+          valueFrom:
+            configMapKeyRef:
+              name: region-config
+              key: aws-region

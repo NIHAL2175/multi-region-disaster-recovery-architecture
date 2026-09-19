@@ -1,0 +1,189 @@
+{
+  "title": "PaySecure Gateway - DR Readiness & RPO/RTO Dashboard",
+  "description": "Real-time replication lag, health probe matrix, and automated failover preparedness indicators across Mumbai (ap-south-1) and Hyderabad (ap-south-2).",
+  "refresh": "30s",
+  "tags": [
+    "dr",
+    "resilience",
+    "replication",
+    "rpo-rto",
+    "bcrb"
+  ],
+  "panels": [
+    {
+      "id": 1,
+      "title": "RPO Status: Aurora Global DB Replication Lag (ms)",
+      "type": "stat",
+      "gridPos": {
+        "x": 0,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "aws_rds_aurora_global_db_replication_lag_average"
+        }
+      ],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": 0,
+            "color": "green"
+          },
+          {
+            "value": 250,
+            "color": "yellow"
+          },
+          {
+            "value": 500,
+            "color": "red"
+          }
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "title": "RPO Status: DynamoDB Global Tables Latency (ms)",
+      "type": "stat",
+      "gridPos": {
+        "x": 6,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "aws_dynamodb_replication_latency_average"
+        }
+      ],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": 0,
+            "color": "green"
+          },
+          {
+            "value": 500,
+            "color": "yellow"
+          },
+          {
+            "value": 1000,
+            "color": "red"
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "title": "Estimated RTO (Current Standby Promotion Time)",
+      "type": "stat",
+      "gridPos": {
+        "x": 12,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "paysecure_dr_estimated_rto_seconds"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      },
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": 0,
+            "color": "green"
+          },
+          {
+            "value": 180,
+            "color": "yellow"
+          },
+          {
+            "value": 300,
+            "color": "red"
+          }
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "title": "Route 53 Deep Health Check Composite Status",
+      "type": "stat",
+      "gridPos": {
+        "x": 18,
+        "y": 0,
+        "w": 6,
+        "h": 4
+      },
+      "targets": [
+        {
+          "expr": "aws_route53_health_check_status{check_name='primary-composite'}"
+        }
+      ],
+      "thresholds": {
+        "mode": "absolute",
+        "steps": [
+          {
+            "value": 0,
+            "color": "red"
+          },
+          {
+            "value": 1,
+            "color": "green"
+          }
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "title": "Cross-Region Replication Lag Timeline (Last 6 Hours)",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 0,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "aws_rds_aurora_global_db_replication_lag_average",
+          "legendFormat": "Aurora PostgreSQL (ms)"
+        },
+        {
+          "expr": "aws_elasticache_global_datastore_replication_lag_average",
+          "legendFormat": "ElastiCache Redis (ms)"
+        },
+        {
+          "expr": "aws_kafka_replicator_message_lag_sum / 100",
+          "legendFormat": "MSK Replicator Lag (x100 msgs)"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Cross-Region Direct Connect / Inter-Region Latency & Jitter",
+      "type": "timeseries",
+      "gridPos": {
+        "x": 12,
+        "y": 4,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "expr": "paysecure_inter_region_rtt_seconds * 1000",
+          "legendFormat": "RTT ap-south-1 <-> ap-south-2 (ms)"
+        }
+      ]
+    }
+  ]
+}

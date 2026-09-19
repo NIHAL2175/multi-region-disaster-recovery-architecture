@@ -1,0 +1,13 @@
+# Example Configuration Variables for PaySecure Multi-Region DR
+
+primary_region       = "ap-south-1"
+secondary_region     = "ap-south-2"
+environment          = "production"
+dr_tier              = "Hot-Standby"
+domain_name          = "paysecure.in"
+primary_vpc_cidr     = "10.100.0.0/16"
+secondary_vpc_cidr   = "10.200.0.0/16"
+primary_azs          = ["ap-south-1a", "ap-south-1b", "ap-south-1c"]
+secondary_azs        = ["ap-south-2a", "ap-south-2b", "ap-south-2c"]
+db_master_username   = "paysecure_admin"
+db_master_password   = "REPLACE_WITH_SECURE_VAULT_PASSWORD_MIN_32_CHARS"

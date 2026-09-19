@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: transaction-processor-pdb
+  namespace: paysecure
+spec:
+  minAvailable: "80%"
+  selector:
+    matchLabels:
+      app: transaction-processor

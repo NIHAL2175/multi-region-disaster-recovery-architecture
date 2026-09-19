@@ -1,0 +1,10 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: payment-api-pdb
+  namespace: paysecure
+spec:
+  minAvailable: "75%"
+  selector:
+    matchLabels:
+      app: payment-api
