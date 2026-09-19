@@ -1,4 +1,4 @@
-# Multi-Region Disaster Recovery Architecture Payment Systems
+# Multi-Region Disaster Recovery Architecture
 
 > **Author** : Nihal N  
 > **Track** : DevOps & Cloud Engineer  
